@@ -1,8 +1,8 @@
-import { findRequestByReference, createDraftRequest, listStudentRequests, setNotionPageId, updateRequestAnalysis } from '../models/requestModel.js'
+import { findRequestByReference, createDraftRequest, deleteRequest, listStudentRequests, setNotionPageId, updateRequestAnalysis } from '../models/requestModel.js'
 import { listRunLogs } from '../models/runLogModel.js'
 import { analyseRequest } from '../services/aiService.js'
 import { logEvent } from '../services/logService.js'
-import { createNotionRequest } from '../services/notionService.js'
+import { archiveNotionRequest, createNotionRequest } from '../services/notionService.js'
 import { AppError } from '../utils/AppError.js'
 import { requestResponse, runLogResponse } from '../utils/serializers.js'
 
@@ -61,4 +61,17 @@ export async function getMyRequestLogs(req, res) {
   if (request.student_id !== req.user.id) throw new AppError(403, 'You can only view your own requests.', 'FORBIDDEN')
   const logs = await listRunLogs(request.id)
   res.json({ logs: logs.map(runLogResponse) })
+}
+
+export async function deleteMyRequest(req, res) {
+  const request = await findRequestByReference(req.params.id)
+  if (!request) throw new AppError(404, 'Request not found.', 'NOT_FOUND')
+  if (request.student_id !== req.user.id) throw new AppError(403, 'You can only delete your own requests.', 'FORBIDDEN')
+  try {
+    await archiveNotionRequest(request.notion_page_id)
+  } catch {
+    // Local deletion remains available if the external Notion page is already gone.
+  }
+  await deleteRequest(request.id)
+  res.status(204).send()
 }

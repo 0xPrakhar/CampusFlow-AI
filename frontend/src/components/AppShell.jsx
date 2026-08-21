@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Bell, ChevronDown, ClipboardList, LayoutDashboard, LogOut, Menu, PanelLeftClose, Send, X } from 'lucide-react'
+import { Bell, ChevronDown, ClipboardList, LayoutDashboard, LogOut, Menu, PanelLeftClose, Send, Trash2, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Brand from './Brand'
 
@@ -18,12 +18,21 @@ const studentNavItems = [
 
 export default function AppShell({ children }) {
   const [open, setOpen] = useState(false)
-  const { user, logout } = useAuth()
+  const { user, logout, deleteAccount } = useAuth()
   const navigate = useNavigate()
   const isStudent = user?.role === 'STUDENT'
-  const demoMode = import.meta.env.VITE_DEMO_MODE !== 'false'
+  const demoMode = import.meta.env.VITE_DEMO_MODE === 'true'
   const navItems = isStudent ? studentNavItems : adminNavItems
   const leave = () => { logout(); navigate('/login') }
+  const removeAccount = async () => {
+    if (!window.confirm('Delete your account and all of its requests permanently?')) return
+    try {
+      await deleteAccount()
+      navigate('/login')
+    } catch {
+      window.alert('Account deletion failed. Please try again.')
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -36,8 +45,9 @@ export default function AppShell({ children }) {
           {navItems.map(({ to, label, icon: Icon }) => <NavLink key={label} to={to} onClick={() => setOpen(false)} className={({ isActive }) => `side-link ${isActive ? 'active' : ''}`}><Icon size={18} strokeWidth={1.8} />{label}</NavLink>)}
         </nav>
         <div className="sidebar-footer">
-          <div className="notion-state"><span className="online-dot" />{isStudent ? 'Request tracking active' : 'Notion connected'}</div>
+          <div className="notion-state"><span className="online-dot" />{isStudent ? 'Request tracking active' : 'Workflow sync active'}</div>
           <div className="profile-row"><div className="avatar">{(user?.name || 'A').slice(0, 1)}</div><div><strong>{user?.name || 'Admin'}</strong><span>{isStudent ? 'Student' : 'Operations staff'}</span></div><button onClick={leave} aria-label="Sign out"><LogOut size={16} /></button></div>
+          {isStudent && <button className="account-delete" onClick={removeAccount}><Trash2 size={14} />Delete account</button>}
         </div>
       </aside>
       <main className="main-content">

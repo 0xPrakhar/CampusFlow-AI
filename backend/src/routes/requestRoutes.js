@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createRequest, getMyRequestById, getMyRequestLogs, getMyRequests } from '../controllers/requestController.js'
+import { createRequest, deleteMyRequest, getMyRequestById, getMyRequestLogs, getMyRequests } from '../controllers/requestController.js'
 import { authenticate, requireStudent } from '../middleware/auth.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 
@@ -8,6 +8,7 @@ router.use(authenticate, requireStudent)
 router.post('/', asyncHandler(createRequest))
 router.get('/my', asyncHandler(getMyRequests))
 router.get('/:id/logs', asyncHandler(getMyRequestLogs))
+router.delete('/:id', asyncHandler(deleteMyRequest))
 router.get('/:id', asyncHandler(getMyRequestById))
 
 export default router

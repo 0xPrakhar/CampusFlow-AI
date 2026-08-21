@@ -1,7 +1,7 @@
 import { Check, CircleDot } from 'lucide-react'
 
 const steps = ['Received', 'AI analysed', 'Notion task created', 'Human approval', 'Action', 'Completed']
-const progress = { PENDING_APPROVAL: 2, APPROVED: 3, PROCESSING: 4, COMPLETED: 5, REJECTED: 3 }
+const progress = { PENDING_APPROVAL: 2, APPROVED: 3, COMPLETED: 5, REJECTED: 3, FAILED: 4 }
 
 export default function Timeline({ status = 'PENDING_APPROVAL', logs = false }) {
   const activeAt = progress[status] ?? 2

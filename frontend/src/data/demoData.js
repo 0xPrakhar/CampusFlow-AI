@@ -35,7 +35,7 @@ export const demoRequests = [
     category: 'Certificate',
     priority: 'LOW',
     deadline: 'Monday',
-    status: 'PROCESSING',
+    status: 'APPROVED',
     createdAt: '1 hr ago',
     originalRequest: 'I need a bonafide certificate for my scholarship submission.',
     summary: 'Student requires a bonafide certificate.',

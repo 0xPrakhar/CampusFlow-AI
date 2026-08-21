@@ -1,6 +1,6 @@
 import api from './axios'
 
-const demoMode = import.meta.env.VITE_DEMO_MODE !== 'false'
+const demoMode = import.meta.env.VITE_DEMO_MODE === 'true'
 
 const createDemoSession = (email, role) => ({
   token: 'campusflow-demo-token',
@@ -21,4 +21,14 @@ export async function register(details) {
   if (demoMode) return createDemoSession(details.email, 'STUDENT')
   const { data } = await api.post('/api/auth/register', details)
   return data
+}
+
+export async function deleteAccount() {
+  if (demoMode) return
+  await api.delete('/api/auth/account')
+}
+
+export async function logout() {
+  if (demoMode) return
+  await api.post('/api/auth/logout')
 }

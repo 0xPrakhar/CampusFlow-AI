@@ -10,6 +10,7 @@ import RunLogs from './pages/RunLogs'
 import StudentDashboard from './pages/StudentDashboard'
 import StudentRequests from './pages/StudentRequests'
 import StudentRequestDetail from './pages/StudentRequestDetail'
+import Landing from './pages/Landing'
 
 function ProtectedRoute() {
   const { user, loading } = useAuth()
@@ -28,6 +29,11 @@ function RoleHome() {
   return <Navigate to={user?.role === 'STUDENT' ? '/student/dashboard' : '/dashboard'} replace />
 }
 
+function PublicHome() {
+  const { user } = useAuth()
+  return user ? <RoleHome /> : <Landing />
+}
+
 function WorkspaceLayout() {
   return <AppShell><Outlet /></AppShell>
 }
@@ -35,11 +41,11 @@ function WorkspaceLayout() {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<PublicHome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<WorkspaceLayout />}>
-          <Route index element={<RoleHome />} />
           <Route element={<RoleRoute role="STAFF" />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/requests" element={<Requests />} />
@@ -53,7 +59,7 @@ export default function App() {
           </Route>
         </Route>
       </Route>
-      <Route path="*" element={<RoleHome />} />
+      <Route path="*" element={<PublicHome />} />
     </Routes>
   )
 }

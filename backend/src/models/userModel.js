@@ -26,3 +26,8 @@ export async function findUserById(id) {
   const { rows } = await query('SELECT * FROM users WHERE id = $1', [id])
   return rows[0] || null
 }
+
+export async function deleteUser(userId) {
+  const { rowCount } = await query('DELETE FROM users WHERE id = $1', [userId])
+  return rowCount > 0
+}

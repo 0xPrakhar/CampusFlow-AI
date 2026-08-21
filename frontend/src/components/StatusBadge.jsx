@@ -1,6 +1,9 @@
 const labels = {
-  PENDING_APPROVAL: 'Pending approval', APPROVED: 'Approved', PROCESSING: 'Processing',
-  COMPLETED: 'Completed', REJECTED: 'Rejected', FAILED: 'Failed',
+  PENDING_APPROVAL: 'Pending approval',
+  APPROVED: 'Approved',
+  COMPLETED: 'Completed',
+  REJECTED: 'Rejected',
+  FAILED: 'Failed',
 }
 
 export default function StatusBadge({ status, subtle = false }) {

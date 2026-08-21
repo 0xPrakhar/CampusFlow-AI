@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Clock3,
+  XCircle,
 } from "lucide-react";
 import { getRequests } from "../api/requests";
 import StatCard from "../components/StatCard";
@@ -77,6 +78,13 @@ export default function Dashboard() {
           icon={CheckCircle2}
           tone="green"
           hint="Successfully closed"
+        />
+        <StatCard
+          label="Rejected"
+          value={loading ? "—" : count("REJECTED")}
+          icon={XCircle}
+          tone="red"
+          hint="Declined requests"
         />
         <StatCard
           label="Automated"

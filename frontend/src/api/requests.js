@@ -1,7 +1,7 @@
 import api from './axios'
 import { demoRequests, demoRunLogs } from '../data/demoData'
 
-const demoMode = import.meta.env.VITE_DEMO_MODE !== 'false'
+const demoMode = import.meta.env.VITE_DEMO_MODE === 'true'
 const storeKey = 'campusflow-demo-requests'
 
 function getStore() {
@@ -35,6 +35,14 @@ export async function getRequest(id, role) {
   const endpoint = role === 'STAFF' ? `/api/staff/requests/${id}` : `/api/requests/${id}`
   const { data } = await api.get(endpoint)
   return unwrapRequest(data)
+}
+
+export async function deleteRequest(id) {
+  if (demoMode) {
+    saveStore(getStore().filter((request) => request.id !== id))
+    return
+  }
+  await api.delete(`/api/requests/${id}`)
 }
 
 export async function createRequest(payload) {

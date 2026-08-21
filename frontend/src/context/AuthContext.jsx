@@ -14,20 +14,34 @@ export function AuthProvider({ children }) {
   }, [])
 
   const persist = (session) => {
-    const currentUser = session.user || session
-    if (session.token) localStorage.setItem('campusflow-token', session.token)
-    localStorage.setItem('campusflow-user', JSON.stringify(currentUser))
+    const currentUser = session?.user || session || null
+    const accessToken = session?.accessToken || session?.token
+    if (accessToken) localStorage.setItem('campusflow-token', accessToken)
+    if (currentUser) localStorage.setItem('campusflow-user', JSON.stringify(currentUser))
     setUser(currentUser)
     return currentUser
   }
 
-  const logout = () => {
+  const clearSession = () => {
     localStorage.removeItem('campusflow-token')
     localStorage.removeItem('campusflow-user')
     setUser(null)
   }
 
-  return <AuthContext.Provider value={{ user, loading, login: async (data) => persist(await authApi.login(data)), register: async (data) => persist(await authApi.register(data)), logout }}>{children}</AuthContext.Provider>
+  const logout = async () => {
+    try {
+      if (user) await authApi.logout()
+    } finally {
+      clearSession()
+    }
+  }
+
+  const deleteAccount = async () => {
+    await authApi.deleteAccount()
+    clearSession()
+  }
+
+  return <AuthContext.Provider value={{ user, loading, login: async (data) => persist(await authApi.login(data)), register: async (data) => persist(await authApi.register(data)), logout, deleteAccount }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

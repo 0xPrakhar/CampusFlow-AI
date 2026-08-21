@@ -49,6 +49,11 @@ export async function listStudentRequests(studentId) {
   return rows
 }
 
+export async function deleteRequest(requestId) {
+  const { rowCount } = await query('DELETE FROM requests WHERE id = $1', [requestId])
+  return rowCount > 0
+}
+
 export async function listAllRequests() {
   const { rows } = await query(`${baseSelect} ORDER BY CASE r.status WHEN 'PENDING_APPROVAL' THEN 0 ELSE 1 END, r.created_at DESC`)
   return rows

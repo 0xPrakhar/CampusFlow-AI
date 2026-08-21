@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { clearRefreshToken, createUser, findUserByEmail, setRefreshToken } from '../models/userModel.js'
+import { clearRefreshToken, createUser, deleteUser, findUserByEmail, setRefreshToken } from '../models/userModel.js'
 import { AppError } from '../utils/AppError.js'
 import { userResponse } from '../utils/serializers.js'
 import { createAccessToken, createRefreshToken } from '../utils/tokens.js'
@@ -43,5 +43,10 @@ export async function me(req, res) {
 
 export async function logout(req, res) {
   await clearRefreshToken(req.user.id)
+  res.status(204).send()
+}
+
+export async function deleteAccount(req, res) {
+  await deleteUser(req.user.id)
   res.status(204).send()
 }

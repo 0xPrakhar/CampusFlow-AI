@@ -59,6 +59,14 @@ Errors: `400`, `401` invalid credentials.
 - Body: none
 - Response: `204`
 
+### `DELETE /api/auth/account`
+
+- Authentication: Yes
+- Role: STUDENT or STAFF
+- Body: none
+- Permanently deletes the signed-in account, its requests, and related run logs.
+- Response: `204`
+
 ## Student requests
 
 ### `POST /api/requests`
@@ -96,6 +104,14 @@ Errors: `400` invalid text, `401`, `403`, `422` invalid AI response, `502` AI pr
 - Authentication: Yes
 - Role: STUDENT
 - Response `200`: `{ "logs": [...] }` for that student's request.
+
+### `DELETE /api/requests/:id`
+
+- Authentication: Yes
+- Role: STUDENT
+- Permanently deletes the student's own request and related run logs.
+- Any linked Notion page is archived when available.
+- A student cannot delete another student's request. Errors: `403`, `404`.
 
 ## Staff operations
 
